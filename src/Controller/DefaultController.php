@@ -26,7 +26,7 @@ class DefaultController extends AbstractController
     
         $mailer->send($email);*/
     
-        $this->dispatchMessage(new TestMessage('Look! I created a message!'));
+        $this->dispatchMessage(new TestMessage('Look! I created a message! Lucky number: '.$number));
         
         return new Response(
             '<html><body>Lucky number: '.$number.'</body></html>'
