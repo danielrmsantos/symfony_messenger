@@ -13,3 +13,12 @@ framework:
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
             'App\Message\TestMessage': async
+        buses:
+            messenger.bus.default:
+                # disable the default middleware
+                #default_middleware: false
+
+                # and/or add your own
+                middleware:
+                    # service ids that implement Symfony\Component\Messenger\Middleware\MiddlewareInterface
+                    - 'App\Middleware\CustomMiddleware'
