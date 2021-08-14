@@ -34,3 +34,5 @@ Thumbs.db
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+/.docker/mongodb/data/db/*
+!/.docker/mongodb/data/db/.gitkeep

@@ -4,7 +4,7 @@ services:
     build: .docker/apache
     container_name: sf4_apache
     ports:
-      - 80:80
+      - "80:80"
     volumes:
       - .docker/config/vhosts:/etc/apache2/sites-enabled
       - .:/home/wwwroot/sf4
@@ -14,6 +14,8 @@ services:
   mysql:
     image: mysql:8
     container_name: sf4_mysql
+    ports:
+      - "3306:3306"
     volumes:
       - .docker/data/db:/var/lib/mysql
     command:
@@ -35,6 +37,7 @@ services:
     depends_on:
       - maildev
       - mysql
+      - mongodb
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -43,7 +46,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
     ports:
-      - 8080:80
+      - "8080:80"
     links:
       - mysql
 
@@ -51,5 +54,35 @@ services:
     image: djfarrelly/maildev
     container_name: sf4_maildev
     ports:
-      - 25
-      - 8001:80
+      - "25"
+      - "8001:80"
+
+  mongodb:
+    build:
+      context: .docker/mongodb
+      dockerfile: Dockerfile.mongodb
+      args:
+        mongodb_initdb_database: symfony
+        mongodb_password: symfony
+        mongodb_username: symfony
+    environment:
+      MONGO_INITDB_DATABASE: symfony
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGODB_PASSWORD: symfony
+      MONGODB_SERVER: mongodb://mongodb:27017
+      MONGODB_USERNAME: symfony
+      TZ: Europe/Paris
+    env_file:
+      - .env
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 27017
+      published: 27017
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: .docker/mongodb/data/db
+      target: /data/db
